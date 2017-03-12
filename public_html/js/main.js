@@ -6,6 +6,7 @@ imageLoader.addEventListener('change', uploadImage, false);
 
 var canvas = document.getElementById('main_canvas');
 var ctx = canvas.getContext('2d');
+var background = -1;
 
 // onclick events
 $(document).on('click', '#add_font', function () {
@@ -23,6 +24,7 @@ function uploadImage(image) {
             ctx.drawImage(img, 0, 0);
         }
         img.src = event.target.result;
+        background = img;
     }
     reader.readAsDataURL(image.target.files[0]);
 }
@@ -45,7 +47,7 @@ function changeFontOptions() {
     // Add the text add section
     font_div.append("<div class='form-group'> \n\
                 <label for='comment'>Comment:</label>\n\
-<textarea class='form-control' rows='5' id='comment'></textarea></div>");
+<textarea class='form-control' rows='5' id='comment_" + font_id_old + "'></textarea></div>");
 
     // Add in the font selector panel
     var font_selector_id = "font_selector_" + font_id_old;
@@ -61,13 +63,13 @@ function changeFontOptions() {
 </select>");
     
     // Add in font size
-    font_div.append("Size: <input type='text' class='form-control id='size_" + font_id_old + "' \n\
+    font_div.append("Size: <input type='text' class='form-control' id='size_" + font_id_old + "' \n\
 bfh-number' data-min='8' data-max='72'>");
 
     // Add in the position controls
-    font_div.append("X: <input type='text' class='form-control id='X_" + font_id_old + "' \n\
+    font_div.append("X: <input type='text' class='form-control' id='X_" + font_id_old + "' \n\
 bfh-number' data-min='0'>");
-    font_div.append("Y: <input type='text' class='form-control id='Y_" + font_id_old + "' \n\
+    font_div.append("Y: <input type='text' class='form-control' id='Y_" + font_id_old + "' \n\
 bfh-number' data-min='0'>");
 
     // Add in the Update button
@@ -88,8 +90,35 @@ function updateFont(object){
     updateCanvas();
 }
 
-function updateCavnas(){
+function updateCanvas(){
+    // Clear the canvas to redraw all the fonts
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     
+    // Place the picture on the canvas
+    if(background != -1){
+        ctx.drawImage(background, 0, 0);
+    }
+    
+    
+    // Go through and add back in all the fonts
+    for(var i = 0; i < font_array.length; i++){
+        var font_to_display = document.getElementById(font_array[i]);
+        var font_content = "comment_" + font_array[i];
+        font_content = document.getElementById(font_content).value;
+        var font_type = "font_select_" + font_array[i];
+        font_type = document.getElementById(font_type).value;
+        var font_size = "size_" + font_array[i];
+        font_size = document.getElementById(font_size).value + "px";
+        var font_x = "X_" + font_array[i];
+        font_x = document.getElementById(font_x).value;
+        var font_y = "Y_" + font_array[i];
+        font_y = document.getElementById(font_y).value;
+        
+        ctx.font = font_size + " " + font_type;
+        var x = parseInt(font_x);
+        var y = parseInt(font_y);
+        ctx.fillText(font_content, x, y);
+    }
 }
 
 function removeFont(object){

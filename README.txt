@@ -43,8 +43,9 @@ IPs, use this command instead:
 Dependencies
 --------------
 This program requires:
- - Python 3.5 or later
+ - Python 3.5 or later (All files should be compatible with 3.5 but was written and tested with 3.6.0)
  - The Flask framework for Python
+
 The program was written and tested on Windows 7 Service Pack 1. It should be able to run on Linux and newer versions of Windows as well, but was
 not tested with them. 
 
@@ -63,3 +64,10 @@ Bootstrap
 Flask
  - http://flask.pocoo.org/
  - For web page hosting and web server functionality
+
+
+Why I Chose to Develop This Application
+--------------
+I chose to develop the Postcard Creator application for several reasons. The most influential reason was that I felt like I could design, plan,
+and implement the problem the fastest and complete the most with what I already knew. The second reason was that all of my previous web apps used
+Java for the server side and this would give me a good reason to learn a Python serverside framework. 

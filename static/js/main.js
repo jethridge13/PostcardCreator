@@ -1,18 +1,22 @@
+// Variables for use with fonts
 var active_fonts = 0;
 var font_array = [];
 
+// Variables for use with the canvas
 var imageLoader;
 var canvas;
 var ctx;
 var background;
 
-$(document).ready(function(){
-imageLoader = document.getElementById('file_broswer');
-imageLoader.addEventListener('change', uploadImage, false);
-
-canvas = document.getElementById('main_canvas');
-ctx = canvas.getContext('2d');
-background = -1;
+$(document).ready(function () {
+    // Listener for the file broswer button
+    imageLoader = document.getElementById('file_broswer');
+    imageLoader.addEventListener('change', uploadImage, false);
+    
+    // Assigning the canvas and canvas context to the necessary variables
+    canvas = document.getElementById('main_canvas');
+    ctx = canvas.getContext('2d');
+    background = -1;
 })
 
 
@@ -22,10 +26,11 @@ $(document).on('click', '#add_font', function () {
     changeFontOptions($(this).html());
 });
 
-$(document).on('click', '#send_email', function() {
+$(document).on('click', '#send_email', function () {
     openEmailPrompt(($(this).html()));
 });
 
+// Function for loading the image from the user
 function uploadImage(image) {
     canvas.background = 'red';
     var reader = new FileReader();
@@ -42,13 +47,15 @@ function uploadImage(image) {
     reader.readAsDataURL(image.target.files[0]);
 }
 
-function openEmailPrompt(){
-    var email = prompt("Enter the destination email address for the postcard: ");
-    if (email != null && email != ""){
+// Function for asking the user for the recipient's email address
+function openEmailPrompt() {
+    var email = prompt("Enter the recipient's email address for the postcard: ");
+    if (email != null && email != "") {
         sendEmail(email);
     }
 }
 
+// Add an additional font section to the page
 function changeFontOptions() {
     // Add a div for the font
     var font_id = "" + active_fonts;
@@ -81,7 +88,7 @@ function changeFontOptions() {
 <option>Impact</option>\n\
 <option>Verdana</option>\n\
 </select>");
-    
+
     // Add in font size
     font_div.append("Size: <input type='text' class='form-control' id='size_" + font_id_old + "' \n\
 bfh-number' data-min='8' data-max='72'>");
@@ -99,17 +106,18 @@ onclick='updateFont(this)'>Update</button>");
     //Add in the remove button
     font_div.append("<button type='button' id='remove_" + font_id_old + "' class='btn btn-default'\n\
 onclick='removeFont(this)'>Remove</button>");
-    
+
     active_fonts++;
     font_array.push(parseInt(font_id_old));
 }
 
-function sendEmail(email){
+// Send the email information to the server
+function sendEmail(email) {
     console.log("TEST");
     var canvasURL = canvas.toDataURL();
     console.log(email);
     console.log(canvasURL);
-    
+
     $.ajax({
         type: "POST",
         url: "./email",
@@ -117,30 +125,31 @@ function sendEmail(email){
             imgBase64: canvasURL,
             email: email
         },
-        success: function(){
+        success: function () {
             alert("Email sent successfully!");
         }
     });
 }
 
-function updateFont(object){
-    //TODO
+// Deprecated function for updating fonts
+function updateFont(object) {
     //console.log(object.id);
     updateCanvas();
 }
 
-function updateCanvas(){
+// Redraws the canvas with the picture and then all additional fonts
+function updateCanvas() {
     // Clear the canvas to redraw all the fonts
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
+
     // Place the picture on the canvas
-    if(background != -1){
+    if (background != -1) {
         ctx.drawImage(background, 0, 0);
     }
-    
-    
+
+
     // Go through and add back in all the fonts
-    for(var i = 0; i < font_array.length; i++){
+    for (var i = 0; i < font_array.length; i++) {
         var font_to_display = document.getElementById(font_array[i]);
         var font_content = "comment_" + font_array[i];
         font_content = document.getElementById(font_content).value;
@@ -152,7 +161,7 @@ function updateCanvas(){
         font_x = document.getElementById(font_x).value;
         var font_y = "Y_" + font_array[i];
         font_y = document.getElementById(font_y).value;
-        
+
         ctx.font = font_size + " " + font_type;
         var x = parseInt(font_x);
         var y = parseInt(font_y);
@@ -160,31 +169,34 @@ function updateCanvas(){
     }
 }
 
-function removeFont(object){
+// Remove the font from the font list and font panel
+function removeFont(object) {
     // Get the font number to remove from the array
     var font_number = object.id.toString();
     font_number = font_number.replace(/[^\d.]/g, '');
     font_number = parseInt(font_number);
     //console.log(font_number);
-    
+
     // Find the index in the array to remove
     var index = font_array.indexOf(font_number);
-    
+
     // Remove from the array
-    if(index > -1){
+    if (index > -1) {
         font_array.splice(index, 1);
     }
-    
+
     var font_to_remove = document.getElementById(font_number);
     font_to_remove.outerHTML = "";
-    
+
     updateCanvas();
 }
 
-function openNav(){
+// Open the side help bar
+function openNav() {
     document.getElementById("sidenav").style.width = "250px";
 }
 
-function closeNav(){
-    document.getElementById("sidenav").style.width="0";
+// Close the side help bar
+function closeNav() {
+    document.getElementById("sidenav").style.width = "0";
 }

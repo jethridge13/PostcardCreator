@@ -33,9 +33,29 @@
                         <span class="icon-bar"></span>
                     </button>
                     <a class="navbar-brand" href="#">Postcard Creator</a>
+                    <ul class="nav navbar-nav">
+                        <li><a href="#" onclick="openNav()">Help</a></li>
+                    </ul>
                 </div>
             </div>
         </nav> 
+
+        <div id="sidenav" class="sidenav">
+            <style>
+                p{
+                    color:white;
+                }
+            </style>
+            <a href="javascript:void(0)" onclick="closeNav()">Close</a>
+            <p>To upload a photo background, select a photo with the Choose File
+            button. To add text, click the add text button. You can keep clicking
+            the add text button to add additional customized pieces of text.</p>
+            <p>The text-add section contains several fields. The comment field
+            is the words that will be drawn on the canvas. You can select a font
+            from the font dropdown menu. The size is the height of the font in 
+            pixels. Enter a number to change the size. The X and Y fields are the
+            corresponding X and Y coordinates for the canvas.</p>
+        </div>
 
         <div class="container-fluid">
             <style>
@@ -53,7 +73,7 @@
                     <br><br>
                     <button type="button" id="add_font" class="btn btn-default">Add Text</button>
                     <div id="fonts"></div>
-                    
+
                 </div>
 
 

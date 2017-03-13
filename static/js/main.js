@@ -1,16 +1,29 @@
 var active_fonts = 0;
 var font_array = [];
 
-var imageLoader = document.getElementById('file_broswer');
+var imageLoader;
+var canvas;
+var ctx;
+var background;
+
+$(document).ready(function(){
+imageLoader = document.getElementById('file_broswer');
 imageLoader.addEventListener('change', uploadImage, false);
 
-var canvas = document.getElementById('main_canvas');
-var ctx = canvas.getContext('2d');
-var background = -1;
+canvas = document.getElementById('main_canvas');
+ctx = canvas.getContext('2d');
+background = -1;
+})
+
+
 
 // onclick events
 $(document).on('click', '#add_font', function () {
     changeFontOptions($(this).html());
+});
+
+$(document).on('click', '#send_email', function() {
+    openEmailPrompt(($(this).html()));
 });
 
 function uploadImage(image) {
@@ -27,6 +40,13 @@ function uploadImage(image) {
         background = img;
     }
     reader.readAsDataURL(image.target.files[0]);
+}
+
+function openEmailPrompt(){
+    var email = prompt("Enter the destination email address for the postcard: ");
+    if (email != null && email != ""){
+        sendEmail(email);
+    }
 }
 
 function changeFontOptions() {
@@ -82,6 +102,25 @@ onclick='removeFont(this)'>Remove</button>");
     
     active_fonts++;
     font_array.push(parseInt(font_id_old));
+}
+
+function sendEmail(email){
+    console.log("TEST");
+    var canvasURL = canvas.toDataURL();
+    console.log(email);
+    console.log(canvasURL);
+    
+    $.ajax({
+        type: "POST",
+        url: "./email",
+        data: {
+            imgBase64: canvasURL,
+            email: email
+        },
+        success: function(){
+            alert("Email sent successfully!");
+        }
+    });
 }
 
 function updateFont(object){
@@ -140,4 +179,12 @@ function removeFont(object){
     font_to_remove.outerHTML = "";
     
     updateCanvas();
+}
+
+function openNav(){
+    document.getElementById("sidenav").style.width = "250px";
+}
+
+function closeNav(){
+    document.getElementById('sidenav').style.width="0";
 }
